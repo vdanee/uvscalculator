@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universus Speed and Damage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .calculator {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .display {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ddd;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button.red { background-color: red; color: white; }
+        .button.orange { background-color: orange; color: white; }
+        .button.yellow { background-color: yellow; color: black; }
+
+        .button.control { background-color: #007BFF; color: white; }
+        .button.control:hover { background-color: #0056b3; }
+
+        .life-counter {
+            font-size: 2rem;
+            text-align: center;
+            margin: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ddd;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .rotate {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="life-counter" id="topLifeCounter">Player 1 Life: 20</div>
+    <div class="calculator" id="calculatorContainer">
+        <div class="calculator">
+            <div class="display" id="speedDisplay">Speed: 0</div>
+            <div class="buttons">
+                <button class="button red" onclick="setSpeedZone('red')">High</button>
+                <button class="button orange" onclick="setSpeedZone('orange')">Mid</button>
+                <button class="button yellow" onclick="setSpeedZone('yellow')">Low</button>
+            </div>
+            <div class="buttons">
+                <button class="button control" onclick="updateSpeed(1)">+1</button>
+                <button class="button control" onclick="updateSpeed(-1)">-1</button>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <div class="display" id="damageDisplay">Damage: 0</div>
+            <div class="buttons">
+                <button class="button control" onclick="updateDamage(1)">+1</button>
+                <button class="button control" onclick="updateDamage(-1)">-1</button>
+            </div>
+        </div>
+    </div>
+    <div class="life-counter" id="bottomLifeCounter">Player 2 Life: 20</div>
+    <button class="button control" onclick="toggleTurn()" style="margin: 20px;">Exchange Turn</button>
+
+    <script>
+        let speed = 0;
+        let damage = 0;
+
+        function setSpeedZone(zone) {
+            const speedDisplay = document.getElementById('speedDisplay');
+            if (zone === 'red') {
+                speedDisplay.style.backgroundColor = 'red';
+            } else if (zone === 'orange') {
+                speedDisplay.style.backgroundColor = 'orange';
+            } else if (zone === 'yellow') {
+                speedDisplay.style.backgroundColor = 'yellow';
+            }
+        }
+
+        function updateSpeed(change) {
+            speed += change;
+            document.getElementById('speedDisplay').textContent = `Speed: ${speed}`;
+        }
+
+        function updateDamage(change) {
+            damage += change;
+            document.getElementById('damageDisplay').textContent = `Damage: ${damage}`;
+        }
+
+        function toggleTurn() {
+            const calculatorContainer = document.getElementById('calculatorContainer');
+            calculatorContainer.classList.toggle('rotate');
+        }
+    </script>
+</body>
+</html>
