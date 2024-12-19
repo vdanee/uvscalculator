@@ -11,240 +11,288 @@
             padding: 0;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .player {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform: rotate(0deg);
+            position: relative;
+        }
+
+        .player.rotated {
+            transform: rotate(180deg);
+        }
+
+        .counter {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background-color: #f4f4f4;
+            margin: 0 10px;
+        }
+
+        .counter span {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .counter button {
+            padding: 5px;
+            margin: 5px 0;
+            font-size: 16px;
         }
 
         .calculator {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .display {
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #ddd;
-        }
-
-        .buttons {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 10px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .button {
-            padding: 10px 20px;
-            font-size: 1rem;
+        .calculator .row {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .calculator button {
+            padding: 10px;
+            margin: 0 5px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .calculator button.red {
+            background-color: red;
+        }
+
+        .calculator button.orange {
+            background-color: orange;
+        }
+
+        .calculator button.yellow {
+            background-color: yellow;
+            color: black;
+        }
+
+        .calculator .value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .calculator .speed {
+            background-color: lightgray;
+        }
+
+        .calculator .damage {
+            background-color: #ffcccb;
+        }
+
+        .turn-button {
+            margin: 10px 0;
+        }
+
+        .block-buttons {
+            display: none;
+        }
+
+        .player.inactive .block-buttons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .block-buttons button {
+            margin: 5px;
+            padding: 10px;
+        }
+
+        .end-turn-button {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        .button.red { background-color: red; color: white; }
-        .button.orange { background-color: orange; color: white; }
-        .button.yellow { background-color: yellow; color: black; }
-
-        .button.control { background-color: #007BFF; color: white; }
-        .button.control:hover { background-color: #0056b3; }
-
-        .life-counter {
-            font-size: 2rem;
-            text-align: center;
-            margin: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #ddd;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .rotate {
-            transform: rotate(180deg);
-        }
-
-        .block-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin: 10px 0;
-        }
-
-        .block-buttons.hidden {
-            display: none;
+        .player.active .end-turn-button {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="life-counter" id="topLifeCounter">Player 1 Life: 20</div>
-    <div class="block-buttons hidden" id="player1Buttons"></div>
-    <div class="calculator" id="calculatorContainer">
-        <div class="calculator">
-            <div class="display" id="speedDisplay">Speed: 0</div>
-            <div class="buttons">
-                <button class="button red" onclick="setSpeedZone('red')">High</button>
-                <button class="button orange" onclick="setSpeedZone('orange')">Mid</button>
-                <button class="button yellow" onclick="setSpeedZone('yellow')">Low</button>
-            </div>
-            <div class="buttons">
-                <button class="button control" onclick="updateSpeed(1)">+1</button>
-                <button class="button control" onclick="updateSpeed(-1)">-1</button>
-            </div>
+    <div id="player1" class="container player rotated active">
+        <div class="counter">
+            <button onclick="updateHealth('player1', 1)">+1</button>
+            <span id="health1">20</span>
+            <button onclick="updateHealth('player1', -1)">-1</button>
         </div>
-
-        <div class="calculator">
-            <div class="display" id="damageDisplay">Damage: 0</div>
-            <div class="buttons">
-                <button class="button control" onclick="updateDamage(1)">+1</button>
-                <button class="button control" onclick="updateDamage(-1)">-1</button>
-            </div>
+        <button class="end-turn-button" onclick="endTurn()">End Turn</button>
+        <div class="block-buttons">
+            <button id="highBlock1" onclick="block('High')">High Block</button>
+            <button id="midBlock1" onclick="block('Mid')">Mid Block</button>
+            <button id="lowBlock1" onclick="block('Low')">Low Block</button>
+        </div>
+        <div class="counter">
+            <button onclick="updateHandSize('player1', 1)">+1</button>
+            <span id="hand1">7</span>
+            <button onclick="updateHandSize('player1', -1)">-1</button>
         </div>
     </div>
-    <div class="block-buttons hidden" id="player2Buttons"></div>
-    <div class="life-counter" id="bottomLifeCounter">Player 2 Life: 20</div>
-    <button class="button control" onclick="toggleTurn()" style="margin: 20px;">Exchange Turn</button>
+
+    <div id="calculator" class="container calculator">
+        <div class="row">
+            <button class="red" onclick="setSpeedZone('High')">High</button>
+            <button class="orange" onclick="setSpeedZone('Mid')">Mid</button>
+            <button class="yellow" onclick="setSpeedZone('Low')">Low</button>
+        </div>
+        <div class="value speed" id="speedValue">0</div>
+        <div class="row">
+            <button onclick="updateSpeed(1)">+1</button>
+            <button onclick="updateSpeed(-1)">-1</button>
+        </div>
+        <div class="value damage" id="damageValue">0</div>
+        <div class="row">
+            <button onclick="updateDamage(1)">+1</button>
+            <button onclick="updateDamage(-1)">-1</button>
+        </div>
+    </div>
+
+    <div id="player2" class="container player inactive">
+        <div class="counter">
+            <button onclick="updateHealth('player2', 1)">+1</button>
+            <span id="health2">20</span>
+            <button onclick="updateHealth('player2', -1)">-1</button>
+        </div>
+        <button class="end-turn-button" onclick="endTurn()">End Turn</button>
+        <div class="block-buttons">
+            <button id="highBlock2" onclick="block('High')">High Block</button>
+            <button id="midBlock2" onclick="block('Mid')">Mid Block</button>
+            <button id="lowBlock2" onclick="block('Low')">Low Block</button>
+        </div>
+        <div class="counter">
+            <button onclick="updateHandSize('player2', 1)">+1</button>
+            <span id="hand2">7</span>
+            <button onclick="updateHandSize('player2', -1)">-1</button>
+        </div>
+    </div>
 
     <script>
-        let speed = 0;
-        let damage = 0;
-        let turnPlayer = 1; // 1 for Player 1, 2 for Player 2
-        let speedZone = null;
+        let currentSpeedZone = "High";
+        let currentTurn = "player1";
+
+        // Initialize player1 as active, player2 as inactive
+        document.getElementById("player1").classList.add("active");
+        document.getElementById("player2").classList.add("inactive");
+
+        function updateHealth(player, change) {
+            const healthElement = document.getElementById(`health${player === 'player1' ? '1' : '2'}`);
+            let health = parseInt(healthElement.innerText);
+            health = Math.max(0, health + change);
+            healthElement.innerText = health;
+        }
+
+        function updateHandSize(player, change) {
+            const handElement = document.getElementById(`hand${player === 'player1' ? '1' : '2'}`);
+            let handSize = parseInt(handElement.innerText);
+            handSize = Math.max(0, handSize + change);
+            handElement.innerText = handSize;
+        }
 
         function setSpeedZone(zone) {
-            speedZone = zone;
-            const speedDisplay = document.getElementById('speedDisplay');
-            if (zone === 'red') {
-                speedDisplay.style.backgroundColor = 'red';
-            } else if (zone === 'orange') {
-                speedDisplay.style.backgroundColor = 'orange';
-            } else if (zone === 'yellow') {
-                speedDisplay.style.backgroundColor = 'yellow';
-            }
-            updateBlockButtons();
+            currentSpeedZone = zone;
+            const speedElement = document.getElementById("speedValue");
+            speedElement.style.backgroundColor = zone === "High" ? "red" : zone === "Mid" ? "orange" : "yellow";
+            updateBlockVisibility();
         }
 
         function updateSpeed(change) {
-            speed += change;
-            document.getElementById('speedDisplay').textContent = `Speed: ${speed}`;
+            const speedElement = document.getElementById("speedValue");
+            let speed = parseInt(speedElement.innerText);
+            speed = Math.max(0, speed + change);
+            speedElement.innerText = speed;
         }
 
         function updateDamage(change) {
-            damage += change;
-            document.getElementById('damageDisplay').textContent = `Damage: ${damage}`;
+            const damageElement = document.getElementById("damageValue");
+            let damage = parseInt(damageElement.innerText);
+            damage = Math.max(0, damage + change);
+            damageElement.innerText = damage;
         }
 
-        function toggleTurn() {
-            turnPlayer = turnPlayer === 1 ? 2 : 1;
-            updateBlockButtons();
+        function updateBlockVisibility() {
+            const highBlocks = ["highBlock1", "highBlock2"];
+            const midBlocks = ["midBlock1", "midBlock2"];
+            const lowBlocks = ["lowBlock1", "lowBlock2"];
+
+            highBlocks.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = (currentSpeedZone === "High" || currentSpeedZone === "Mid") ? "inline-block" : "none";
+            });
+
+            midBlocks.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = (currentSpeedZone === "High" || currentSpeedZone === "Mid" || currentSpeedZone === "Low") ? "inline-block" : "none";
+            });
+
+            lowBlocks.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = (currentSpeedZone === "Low" || currentSpeedZone === "Mid") ? "inline-block" : "none";
+            });
         }
 
-        function updateBlockButtons() {
-            const player1Buttons = document.getElementById('player1Buttons');
-            const player2Buttons = document.getElementById('player2Buttons');
-            player1Buttons.innerHTML = '';
-            player2Buttons.innerHTML = '';
+        function endTurn() {
+            currentTurn = currentTurn === "player1" ? "player2" : "player1";
+            document.getElementById("player1").classList.toggle("active", currentTurn === "player1");
+            document.getElementById("player1").classList.toggle("inactive", currentTurn !== "player1");
+            document.getElementById("player2").classList.toggle("active", currentTurn === "player2");
+            document.getElementById("player2").classList.toggle("inactive", currentTurn !== "player2");
+            updateBlockVisibility();
+        }
 
-            if (turnPlayer === 1) {
-                player1Buttons.classList.add('hidden');
-                player2Buttons.classList.remove('hidden');
+        function block(type) {
+            const damageElement = document.getElementById("damageValue");
+            const damage = parseInt(damageElement.innerText);
+            const healthElement = document.getElementById(currentTurn === "player1" ? "health2" : "health1");
+            let health = parseInt(healthElement.innerText);
 
-                if (speedZone === 'red' || speedZone === 'orange') {
-                    addBlockButton(player2Buttons, 'High Block', () => {
-                        if (speedZone === 'red') {
-                            resetSpeedAndDamage();
-                        } else if (speedZone === 'orange') {
-                            updateLife('Player 1', -Math.ceil(damage / 2));
-                        }
-                    });
-                }
-
-                if (speedZone) {
-                    addBlockButton(player2Buttons, 'Mid Block', () => {
-                        if (speedZone === 'red' || speedZone === 'yellow') {
-                            updateLife('Player 1', -Math.ceil(damage / 2));
-                            resetSpeedAndDamage();
-                        } else if (speedZone === 'orange') {
-                            resetSpeedAndDamage();
-                        }
-                    });
-                }
-
-                if (speedZone === 'orange' || speedZone === 'yellow') {
-                    addBlockButton(player2Buttons, 'Low Block', () => {
-                        if (speedZone === 'yellow') {
-                            resetSpeedAndDamage();
-                        } else if (speedZone === 'orange') {
-                            updateLife('Player 1', -Math.ceil(damage / 2));
-                        }
-                    });
-                }
+            if (currentSpeedZone === type) {
+                damageElement.innerText = 0;
+                document.getElementById("speedValue").innerText = 0;
             } else {
-                player2Buttons.classList.add('hidden');
-                player1Buttons.classList.remove('hidden');
-
-                if (speedZone === 'red' || speedZone === 'orange') {
-                    addBlockButton(player1Buttons, 'High Block', () => {
-                        if (speedZone === 'red') {
-                            resetSpeedAndDamage();
-                        } else if (speedZone === 'orange') {
-                            updateLife('Player 2', -Math.ceil(damage / 2));
-                        }
-                    });
-                }
-
-                if (speedZone) {
-                    addBlockButton(player1Buttons, 'Mid Block', () => {
-                        if (speedZone === 'red' || speedZone === 'yellow') {
-                            updateLife('Player 2', -Math.ceil(damage / 2));
-                            resetSpeedAndDamage();
-                        } else if (speedZone === 'orange') {
-                            resetSpeedAndDamage();
-                        }
-                    });
-                }
-
-                if (speedZone === 'orange' || speedZone === 'yellow') {
-                    addBlockButton(player1Buttons, 'Low Block', () => {
-                        if (speedZone === 'yellow') {
-                            resetSpeedAndDamage();
-                        } else if (speedZone === 'orange') {
-                            updateLife('Player 2', -Math.ceil(damage / 2));
-                        }
-                    });
-                }
+                health -= Math.ceil(damage / 2);
+                healthElement.innerText = Math.max(0, health);
+                damageElement.innerText = 0;
+                document.getElementById("speedValue").innerText = 0;
             }
         }
 
-        function addBlockButton(container, text, action) {
-            const button = document.createElement('button');
-            button.textContent = text;
-            button.className = 'button control';
-            button.onclick = action;
-            container.appendChild(button);
-        }
-
-        function resetSpeedAndDamage() {
-            speed = 0;
-            damage = 0;
-            document.getElementById('speedDisplay').textContent = 'Speed: 0';
-            document.getElementById('damageDisplay').textContent = 'Damage: 0';
-        }
-
-        function updateLife(player, change) {
-            const lifeCounter = player === 'Player 1' ? document.getElementById('topLifeCounter') : document.getElementById('bottomLifeCounter');
-            let life = parseInt(lifeCounter.textContent.match(/\d+/)[0]);
-            life += change;
-            lifeCounter.textContent = `${player} Life: ${life}`;
-        }
+        // Initialize visibility on load
+        updateBlockVisibility();
     </script>
 </body>
 </html>
