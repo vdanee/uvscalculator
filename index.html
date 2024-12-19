@@ -52,9 +52,14 @@
             margin: 10px 0;
         }
 
+        .counter .button-group {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
         .counter button {
             padding: 5px;
-            margin: 5px 0;
             font-size: 16px;
         }
 
@@ -85,12 +90,12 @@
 
         .calculator button.red {
             background-color: red;
-			color: black;
+            color: black;
         }
 
         .calculator button.orange {
             background-color: orange;
-			color: black;
+            color: black;
         }
 
         .calculator button.yellow {
@@ -151,11 +156,15 @@
 <body>
     <div id="player1" class="container player rotated active">
         <div class="counter">
-            <button onclick="updateHealth('player1', 5)">+5</button>
-            <button onclick="updateHealth('player1', 1)">+1</button>
+            <div class="button-group">
+                <button onclick="updateHealth('player1', 5)">+5</button>
+                <button onclick="updateHealth('player1', 1)">+1</button>
+            </div>
             <span id="health1">20</span>
-            <button onclick="updateHealth('player1', -1)">-1</button>
-            <button onclick="updateHealth('player1', -5)">-5</button>
+            <div class="button-group">
+                <button onclick="updateHealth('player1', -1)">-1</button>
+                <button onclick="updateHealth('player1', -5)">-5</button>
+            </div>
         </div>
         <button class="end-turn-button" onclick="endTurn()">End Turn</button>
         <div class="block-buttons">
@@ -190,11 +199,15 @@
 
     <div id="player2" class="container player inactive">
         <div class="counter">
-            <button onclick="updateHealth('player2', 5)">+5</button>
-            <button onclick="updateHealth('player2', 1)">+1</button>
+            <div class="button-group">
+                <button onclick="updateHealth('player2', 5)">+5</button>
+                <button onclick="updateHealth('player2', 1)">+1</button>
+            </div>
             <span id="health2">20</span>
-            <button onclick="updateHealth('player2', -1)">-1</button>
-            <button onclick="updateHealth('player2', -5)">-5</button>
+            <div class="button-group">
+                <button onclick="updateHealth('player2', -1)">-1</button>
+                <button onclick="updateHealth('player2', -5)">-5</button>
+            </div>
         </div>
         <button class="end-turn-button" onclick="endTurn()">End Turn</button>
         <div class="block-buttons">
