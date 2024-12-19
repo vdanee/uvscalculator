@@ -18,11 +18,10 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 100%;
             background-color: white;
             border: 2px solid #ccc;
             border-radius: 10px;
-            padding: 5px;
             text-align: center;
         }
 
@@ -48,18 +47,14 @@
 
         .counter span {
             font-size: 24px;
-            margin: 10px 0;
         }
 
         .counter .button-group {
             display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
         }
 
         .counter button {
             padding: 5px;
-            font-size: 16px;
         }
 
         .calculator {
@@ -105,8 +100,8 @@
         .calculator .value {
             font-size: 32px;
             font-weight: bold;
-            margin: 10px;
-            padding: 10px;
+            margin: 5px;
+            padding: 5px;
             border-radius: 10px;
         }
 
@@ -123,12 +118,35 @@
             background-color: #ffcccb;
         }
 
-        .turn-button {
-            margin: 10px 0;
-        }
-
         .block-buttons {
-            display: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .block-row {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .block-buttons button#highBlock1,
+        .block-buttons button#highBlock2 {
+            background-color: red; /* High Block */
+        }
+    
+        .block-buttons button#midBlock1,
+        .block-buttons button#midBlock2 {
+            background-color: orange; /* Mid Block */
+        }
+    
+        .block-buttons button#lowBlock1,
+        .block-buttons button#lowBlock2 {
+            background-color: yellow; /* Low Block */
+        }
+    
+        .block-buttons button#noBlock1,
+        .block-buttons button#noBlock2 {
+            background-color: lightgray; /* Neutral for No Block */
         }
 
         .player.inactive .block-buttons {
@@ -138,7 +156,6 @@
 
         .block-buttons button {
             padding: 10px;
-            margin: 0 5px;
             font-size: 14px;
             border: none;
             border-radius: 5px;
@@ -179,9 +196,14 @@
         </div>
         <button class="end-turn-button" onclick="endTurn()">End Turn</button>
         <div class="block-buttons">
-            <button id="highBlock1" onclick="block('High')">High Block</button>
-            <button id="midBlock1" onclick="block('Mid')">Mid Block</button>
-            <button id="lowBlock1" onclick="block('Low')">Low Block</button>
+            <div class="block-row">
+                <button id="highBlock1" onclick="block('High')">High Block</button>
+                <button id="midBlock1" onclick="block('Mid')">Mid Block</button>
+                <button id="lowBlock1" onclick="block('Low')">Low Block</button>
+            </div>
+            <div class="block-row">
+                <button id="noBlock1" onclick="noBlock()">No Block</button>
+            </div>
         </div>
         <div class="counter">
             <button onclick="updateCounters('player1', 1)">+1</button>
@@ -231,9 +253,14 @@
         </div>
         <button class="end-turn-button" onclick="endTurn()">End Turn</button>
         <div class="block-buttons">
-            <button id="highBlock2" onclick="block('High')">High Block</button>
-            <button id="midBlock2" onclick="block('Mid')">Mid Block</button>
-            <button id="lowBlock2" onclick="block('Low')">Low Block</button>
+            <div class="block-row">
+                <button id="highBlock2" onclick="block('High')">High Block</button>
+                <button id="midBlock2" onclick="block('Mid')">Mid Block</button>
+                <button id="lowBlock2" onclick="block('Low')">Low Block</button>
+            </div>
+            <div class="block-row">
+                <button id="noBlock2" onclick="noBlock()">No Block</button>
+            </div>
         </div>
         <div class="counter">
             <button onclick="updateCounters('player2', 1)">+1</button>
@@ -310,15 +337,21 @@
 
         function endTurn() {
             currentTurn = currentTurn === "player1" ? "player2" : "player1";
+        
+            // Update player active/inactive states
             document.getElementById("player1").classList.toggle("active", currentTurn === "player1");
             document.getElementById("player1").classList.toggle("inactive", currentTurn !== "player1");
             document.getElementById("player2").classList.toggle("active", currentTurn === "player2");
             document.getElementById("player2").classList.toggle("inactive", currentTurn !== "player2");
-
+        
+            // Rotate the calculator for the current turn
             const calculator = document.getElementById("calculator");
             calculator.style.transform = currentTurn === "player1" ? "rotate(180deg)" : "rotate(0deg)";
+        
+            // Update block button visibility
             updateBlockVisibility();
         }
+
         
         let isThrowEnabled = false; // Keeps track of the throw toggle state
 
@@ -328,6 +361,28 @@
             throwButton.innerText = isThrowEnabled ? "Throw On" : "Throw Off";
             throwButton.style.backgroundColor = isThrowEnabled ? "black" : "grey";
             throwButton.style.color = "white"; // White text for both states
+        }
+        
+        function noBlock() {
+            const damageElement = document.getElementById("damageValue");
+            let damage = parseInt(damageElement.innerText);
+            const healthElement = document.getElementById(currentTurn === "player1" ? "health2" : "health1");
+            let health = parseInt(healthElement.innerText);
+        
+            // Directly apply the full damage to the opponent's health
+            health -= damage;
+            healthElement.innerText = Math.max(0, health);
+        
+            // Reset the damage and speed values
+            damageElement.innerText = 0;
+            document.getElementById("speedValue").innerText = 0;
+        
+            // Reset the throw toggle
+            const throwButton = document.getElementById("throwToggle");
+            throwButton.style.backgroundColor = "grey";
+            throwButton.style.color = "white";
+            throwButton.innerText = "Throw Off";
+            isThrowEnabled = false;
         }
         
         function block(type) {
@@ -354,38 +409,35 @@
         }
 
         function updateBlockVisibility() {
-            const highBlocks = ["highBlock1", "highBlock2"];
-            const midBlocks = ["midBlock1", "midBlock2"];
-            const lowBlocks = ["lowBlock1", "lowBlock2"];
-
-            // Set block button styles based on the speed zone
-            const styleMap = {
-                "High": { backgroundColor: "red", color: "black", borderRadius: "5px", padding: "10px", border: "none" },
-                "Mid": { backgroundColor: "orange", color: "black", borderRadius: "5px", padding: "10px", border: "none" },
-                "Low": { backgroundColor: "yellow", color: "black", borderRadius: "5px", padding: "10px", border: "none" },
-            };
-
-            highBlocks.forEach(id => {
-                const element = document.getElementById(id);
-                const style = styleMap["High"];
-                Object.assign(element.style, style);
-                element.style.display = (currentSpeedZone === "High" || currentSpeedZone === "Mid") ? "inline-block" : "none";
+            const blockButtonsPlayer1 = document.querySelector("#player1 .block-buttons");
+            const blockButtonsPlayer2 = document.querySelector("#player2 .block-buttons");
+        
+            // Show block buttons only for the current turn's player
+            if (currentTurn === "player1") {
+                blockButtonsPlayer1.style.display = "none";
+                blockButtonsPlayer2.style.display = "block";
+            } else {
+                blockButtonsPlayer1.style.display = "block";
+                blockButtonsPlayer2.style.display = "none";
+            }
+        
+            // Adjust block button styles based on the speed zone for the active player
+            const activePlayerBlocks = currentTurn === "player1" ? blockButtonsPlayer1 : blockButtonsPlayer2;
+            const highBlocks = activePlayerBlocks.querySelectorAll("button[id^='highBlock']");
+            const midBlocks = activePlayerBlocks.querySelectorAll("button[id^='midBlock']");
+            const lowBlocks = activePlayerBlocks.querySelectorAll("button[id^='lowBlock']");
+        
+            highBlocks.forEach(button => {
+                button.style.display = currentSpeedZone === "High" || currentSpeedZone === "Mid" ? "inline-block" : "none";
             });
-
-            midBlocks.forEach(id => {
-                const element = document.getElementById(id);
-                const style = styleMap["Mid"];
-                Object.assign(element.style, style);
-                element.style.display = (currentSpeedZone === "High" || currentSpeedZone === "Mid" || currentSpeedZone === "Low") ? "inline-block" : "none";
+            midBlocks.forEach(button => {
+                button.style.display = currentSpeedZone === "High" || currentSpeedZone === "Mid" || currentSpeedZone === "Low" ? "inline-block" : "none";
             });
-
-            lowBlocks.forEach(id => {
-                const element = document.getElementById(id);
-                const style = styleMap["Low"];
-                Object.assign(element.style, style);
-                element.style.display = (currentSpeedZone === "Low" || currentSpeedZone === "Mid") ? "inline-block" : "none";
+            lowBlocks.forEach(button => {
+                button.style.display = currentSpeedZone === "Low" || currentSpeedZone === "Mid" ? "inline-block" : "none";
             });
         }
+
 
         document.addEventListener("DOMContentLoaded", () => {
             // Set the initial rotation of the calculator
