@@ -22,7 +22,7 @@
             background-color: white;
             border: 2px solid #ccc;
             border-radius: 10px;
-            padding: 20px;
+            padding: 5px;
             text-align: center;
         }
 
@@ -80,7 +80,7 @@
         .calculator button {
             padding: 10px;
             margin: 0 5px;
-            font-size: 18px;
+            font-size: 14px;
             border: none;
             border-radius: 5px;
             color: black;
@@ -137,8 +137,14 @@
         }
 
         .block-buttons button {
-            margin: 5px;
             padding: 10px;
+            margin: 0 5px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            cursor: pointer;
+            
         }
 
         .end-turn-button {
@@ -178,10 +184,10 @@
             <button id="lowBlock1" onclick="block('Low')">Low Block</button>
         </div>
         <div class="counter">
-            <button onclick="updateHandSize('player1', 1)">+1</button>
-            <span id="hand1">7</span>
-            <div class="value-label">Hand Size</div>
-            <button onclick="updateHandSize('player1', -1)">-1</button>
+            <button onclick="updateCounters('player1', 1)">+1</button>
+            <span id="counters1">0</span>
+            <div class="value-label">Counters</div>
+            <button onclick="updateCounters('player1', -1)">-1</button>
         </div>
     </div>
 
@@ -197,7 +203,12 @@
             <button onclick="updateSpeed(1)">+1</button>
             <button onclick="updateSpeed(-1)">-1</button>
         </div>
-        <div class="value damage" id="damageValue">0</div>
+        <div>
+          <div class="value damage" id="damageValue">0</div>
+          <div class="row">
+              <button id="throwToggle" onclick="toggleThrow()">Throw Off</button>
+          </div>
+        </div>
         <div class="value-label">Damage</div>
         <div class="row">
             <button onclick="updateDamage(1)">+1</button>
@@ -225,10 +236,10 @@
             <button id="lowBlock2" onclick="block('Low')">Low Block</button>
         </div>
         <div class="counter">
-            <button onclick="updateHandSize('player2', 1)">+1</button>
-            <span id="hand2">7</span>
-            <div class="value-label">Hand Size</div>
-            <button onclick="updateHandSize('player2', -1)">-1</button>
+            <button onclick="updateCounters('player2', 1)">+1</button>
+            <span id="counters2">0</span>
+            <div class="value-label">Counters</div>
+            <button onclick="updateCounters('player2', -1)">-1</button>
         </div>
     </div>
 
@@ -238,7 +249,6 @@
 
         calculator.style.transform
 
-        // Initialize player1 as active, player2 as inactive
         document.getElementById("player1").classList.add("active");
         document.getElementById("player2").classList.add("inactive");
 
@@ -249,11 +259,11 @@
             healthElement.innerText = health;
         }
 
-        function updateHandSize(player, change) {
-            const handElement = document.getElementById(`hand${player === 'player1' ? '1' : '2'}`);
-            let handSize = parseInt(handElement.innerText);
-            handSize = Math.max(0, handSize + change);
-            handElement.innerText = handSize;
+        function updateCounters(player, change) {
+            const counterElement = document.getElementById(`counters${player === 'player1' ? '1' : '2'}`);
+            let counters = parseInt(counterElement.innerText);
+            counters = Math.max(0, counters + change);
+            counterElement.innerText = counters;
         }
 
         function setSpeedZone(zone) {
@@ -309,34 +319,81 @@
             calculator.style.transform = currentTurn === "player1" ? "rotate(180deg)" : "rotate(0deg)";
             updateBlockVisibility();
         }
+        
+        let isThrowEnabled = false; // Keeps track of the throw toggle state
 
+        function toggleThrow() {
+            isThrowEnabled = !isThrowEnabled;
+            const throwButton = document.getElementById("throwToggle");
+            throwButton.innerText = isThrowEnabled ? "Throw On" : "Throw Off";
+            throwButton.style.backgroundColor = isThrowEnabled ? "black" : "grey";
+            throwButton.style.color = "white"; // White text for both states
+        }
+        
         function block(type) {
             const damageElement = document.getElementById("damageValue");
-            const damage = parseInt(damageElement.innerText);
+            let damage = parseInt(damageElement.innerText);
             const healthElement = document.getElementById(currentTurn === "player1" ? "health2" : "health1");
             let health = parseInt(healthElement.innerText);
-
-            if (currentSpeedZone === type) {
-                damageElement.innerText = 0;
-                document.getElementById("speedValue").innerText = 0;
-            } else {
-                health -= Math.ceil(damage / 2);
-                healthElement.innerText = Math.max(0, health);
-                damageElement.innerText = 0;
-                document.getElementById("speedValue").innerText = 0;
+        
+            if (isThrowEnabled || currentSpeedZone !== type) {
+              damage = Math.ceil(damage / 2);
+            }else{
+              damage = 0;
             }
+            health -= damage;
+            healthElement.innerText = Math.max(0, health);
+            damageElement.innerText = 0;
+            document.getElementById("speedValue").innerText = 0;
+            
         }
 
-        // Initialize visibility on load
-        updateBlockVisibility();
-        
+        function updateBlockVisibility() {
+            const highBlocks = ["highBlock1", "highBlock2"];
+            const midBlocks = ["midBlock1", "midBlock2"];
+            const lowBlocks = ["lowBlock1", "lowBlock2"];
+
+            // Set block button styles based on the speed zone
+            const styleMap = {
+                "High": { backgroundColor: "red", color: "black", borderRadius: "5px", padding: "10px", border: "none" },
+                "Mid": { backgroundColor: "orange", color: "black", borderRadius: "5px", padding: "10px", border: "none" },
+                "Low": { backgroundColor: "yellow", color: "black", borderRadius: "5px", padding: "10px", border: "none" },
+            };
+
+            highBlocks.forEach(id => {
+                const element = document.getElementById(id);
+                const style = styleMap["High"];
+                Object.assign(element.style, style);
+                element.style.display = (currentSpeedZone === "High" || currentSpeedZone === "Mid") ? "inline-block" : "none";
+            });
+
+            midBlocks.forEach(id => {
+                const element = document.getElementById(id);
+                const style = styleMap["Mid"];
+                Object.assign(element.style, style);
+                element.style.display = (currentSpeedZone === "High" || currentSpeedZone === "Mid" || currentSpeedZone === "Low") ? "inline-block" : "none";
+            });
+
+            lowBlocks.forEach(id => {
+                const element = document.getElementById(id);
+                const style = styleMap["Low"];
+                Object.assign(element.style, style);
+                element.style.display = (currentSpeedZone === "Low" || currentSpeedZone === "Mid") ? "inline-block" : "none";
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             // Set the initial rotation of the calculator
             const calculator = document.getElementById("calculator");
             calculator.style.transform = currentTurn === "player1" ? "rotate(180deg)" : "rotate(0deg)";
+            
+            const throwButton = document.getElementById("throwToggle");
+            throwButton.style.backgroundColor = "grey"; // Default background for "off" state
+            throwButton.style.color = "white"; // Default text color
+            throwButton.innerText = "Throw Off"; // Default label
+            
             updateBlockVisibility();
         });
-
     </script>
 </body>
 </html>
