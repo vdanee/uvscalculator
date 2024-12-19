@@ -19,7 +19,6 @@
         .container {
             width: 100%;
             max-width: 600px;
-            margin: 0px 0;
             background-color: white;
             border: 2px solid #ccc;
             border-radius: 10px;
@@ -111,6 +110,11 @@
             border-radius: 10px;
         }
 
+        .calculator .value-label {
+            font-size: 16px;
+            color: #555;
+        }
+
         .calculator .speed {
             background-color: lightgray;
         }
@@ -161,6 +165,7 @@
                 <button onclick="updateHealth('player1', 1)">+1</button>
             </div>
             <span id="health1">20</span>
+            <div class="value-label">Health</div>
             <div class="button-group">
                 <button onclick="updateHealth('player1', -1)">-1</button>
                 <button onclick="updateHealth('player1', -5)">-5</button>
@@ -175,6 +180,7 @@
         <div class="counter">
             <button onclick="updateHandSize('player1', 1)">+1</button>
             <span id="hand1">7</span>
+            <div class="value-label">Hand Size</div>
             <button onclick="updateHandSize('player1', -1)">-1</button>
         </div>
     </div>
@@ -186,11 +192,13 @@
             <button class="yellow" onclick="setSpeedZone('Low')">Low</button>
         </div>
         <div class="value speed" id="speedValue">0</div>
+        <div class="value-label">Speed</div>
         <div class="row">
             <button onclick="updateSpeed(1)">+1</button>
             <button onclick="updateSpeed(-1)">-1</button>
         </div>
         <div class="value damage" id="damageValue">0</div>
+        <div class="value-label">Damage</div>
         <div class="row">
             <button onclick="updateDamage(1)">+1</button>
             <button onclick="updateDamage(-1)">-1</button>
@@ -204,6 +212,7 @@
                 <button onclick="updateHealth('player2', 1)">+1</button>
             </div>
             <span id="health2">20</span>
+            <div class="value-label">Health</div>
             <div class="button-group">
                 <button onclick="updateHealth('player2', -1)">-1</button>
                 <button onclick="updateHealth('player2', -5)">-5</button>
@@ -218,6 +227,7 @@
         <div class="counter">
             <button onclick="updateHandSize('player2', 1)">+1</button>
             <span id="hand2">7</span>
+            <div class="value-label">Hand Size</div>
             <button onclick="updateHandSize('player2', -1)">-1</button>
         </div>
     </div>
