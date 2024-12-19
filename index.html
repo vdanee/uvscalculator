@@ -345,6 +345,11 @@
             healthElement.innerText = Math.max(0, health);
             damageElement.innerText = 0;
             document.getElementById("speedValue").innerText = 0;
+            const throwButton = document.getElementById("throwToggle");
+            throwButton.style.backgroundColor = "grey"; // Default background for "off" state
+            throwButton.style.color = "white"; // Default text color
+            throwButton.innerText = "Throw Off"; // Default label
+            isThrowEnabled = false; // Keeps track of the throw toggle state
             
         }
 
