@@ -422,10 +422,10 @@
             }
         
             // Adjust block button styles based on the speed zone for the active player
-            const activePlayerBlocks = currentTurn === "player1" ? blockButtonsPlayer1 : blockButtonsPlayer2;
-            const highBlocks = activePlayerBlocks.querySelectorAll("button[id^='highBlock']");
-            const midBlocks = activePlayerBlocks.querySelectorAll("button[id^='midBlock']");
-            const lowBlocks = activePlayerBlocks.querySelectorAll("button[id^='lowBlock']");
+            const inActivePlayerBlocks = currentTurn === "player2" ? blockButtonsPlayer1 : blockButtonsPlayer2;
+            const highBlocks = inActivePlayerBlocks.querySelectorAll("button[id^='highBlock']");
+            const midBlocks = inActivePlayerBlocks.querySelectorAll("button[id^='midBlock']");
+            const lowBlocks = inActivePlayerBlocks.querySelectorAll("button[id^='lowBlock']");
         
             highBlocks.forEach(button => {
                 button.style.display = currentSpeedZone === "High" || currentSpeedZone === "Mid" ? "inline-block" : "none";
