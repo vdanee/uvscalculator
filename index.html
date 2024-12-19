@@ -63,6 +63,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transform: rotate(0deg);
+            transition: transform 0.5s;
         }
 
         .calculator .row {
@@ -77,16 +79,18 @@
             font-size: 18px;
             border: none;
             border-radius: 5px;
-            color: white;
+            color: black;
             cursor: pointer;
         }
 
         .calculator button.red {
             background-color: red;
+			color: black;
         }
 
         .calculator button.orange {
             background-color: orange;
+			color: black;
         }
 
         .calculator button.yellow {
@@ -147,9 +151,11 @@
 <body>
     <div id="player1" class="container player rotated active">
         <div class="counter">
+            <button onclick="updateHealth('player1', 5)">+5</button>
             <button onclick="updateHealth('player1', 1)">+1</button>
             <span id="health1">20</span>
             <button onclick="updateHealth('player1', -1)">-1</button>
+            <button onclick="updateHealth('player1', -5)">-5</button>
         </div>
         <button class="end-turn-button" onclick="endTurn()">End Turn</button>
         <div class="block-buttons">
@@ -184,9 +190,11 @@
 
     <div id="player2" class="container player inactive">
         <div class="counter">
+            <button onclick="updateHealth('player2', 5)">+5</button>
             <button onclick="updateHealth('player2', 1)">+1</button>
             <span id="health2">20</span>
             <button onclick="updateHealth('player2', -1)">-1</button>
+            <button onclick="updateHealth('player2', -5)">-5</button>
         </div>
         <button class="end-turn-button" onclick="endTurn()">End Turn</button>
         <div class="block-buttons">
@@ -204,6 +212,8 @@
     <script>
         let currentSpeedZone = "High";
         let currentTurn = "player1";
+
+        calculator.style.transform
 
         // Initialize player1 as active, player2 as inactive
         document.getElementById("player1").classList.add("active");
@@ -271,6 +281,9 @@
             document.getElementById("player1").classList.toggle("inactive", currentTurn !== "player1");
             document.getElementById("player2").classList.toggle("active", currentTurn === "player2");
             document.getElementById("player2").classList.toggle("inactive", currentTurn !== "player2");
+
+            const calculator = document.getElementById("calculator");
+            calculator.style.transform = currentTurn === "player1" ? "rotate(180deg)" : "rotate(0deg)";
             updateBlockVisibility();
         }
 
@@ -293,6 +306,14 @@
 
         // Initialize visibility on load
         updateBlockVisibility();
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set the initial rotation of the calculator
+            const calculator = document.getElementById("calculator");
+            calculator.style.transform = currentTurn === "player1" ? "rotate(180deg)" : "rotate(0deg)";
+            updateBlockVisibility();
+        });
+
     </script>
 </body>
 </html>
